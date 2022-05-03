@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <%= image_tag @post.get_image(300, 300) %>
+    </div>
+
+    <div class="col-7 offset-1">
+      <p>ショップ名: <%= @post.title %></p>
+      <p>概要: <%= @post.body %></p>
+      <p><%= link_to "削除", public_post_path(@post), method: :delete %></p>
+      <div class="form-group">
+        <%= form_with model: [@post, @comment], url: public_post_comments_path(@post) do |f| %>
+          <%= f.text_area :content %>
+          <%= f.submit "コメントする" %>
+
+          <div class="form-group row" id="star">
+            <%= f.label :star,'評価 ', class:'col-md-3 col-form-label' %>
+            <%= f.hidden_field :star, id: :review_star %>
+          </div>
+
+          <script>
+          $('#star').raty({
+            size     : 36,
+            starOff:  '<%= asset_path('star-off.png') %>',
+            starOn : '<%= asset_path('star-on.png') %>',
+
+            scoreName: 'comment[star]',
+            half: false,
+          });
+          </script>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <% @post.comments.each do |comment| %>
+      <p><%= comment.customer.name %></p>
+      <p><%= comment.content %></p>
+      <p><%= link_to "削除", public_post_comment_path(comment.post, comment), method: :delete %></p>
+    <% end %>
+  </div>
+</div>
